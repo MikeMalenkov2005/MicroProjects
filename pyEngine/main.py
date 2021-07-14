@@ -7,10 +7,10 @@ jump = 128
 #SPACE CREATION BGN
 space = Space()
 #DYNAMICS BGN
-player = Dynamic(mass=1, elasticity=1, shape=Shape(0, [Vec2(10, 10), Vec2(-10, 10), Vec2(-10, -10), Vec2(10, -10)]), color=pg.Color(255, 127, 0))
+player = Dynamic(mass=1, elasticity=0, shape=Shape(10), color=pg.Color(255, 127, 0))
 #DYNAMICS END
 #MAP BGN
-grass = Brash(position=Vec2(0, 100), elasticity=0, shape=Shape(50), color=pg.Color(0, 255, 127))
+grass = Brash(position=Vec2(0, 100), elasticity=0, shape=Shape(0, [Vec2(100, 10), Vec2(-100, 10), Vec2(-100, -10), Vec2(100, -10)]), color=pg.Color(0, 255, 127))
 #MAP END
 space.dynamics = [player]
 space.map = [grass]

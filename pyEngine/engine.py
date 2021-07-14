@@ -160,8 +160,10 @@ class Space:
                         prop.velocity = v * v0f + vr * vr.dot(prop.velocity)
                         prop1.velocity = v * v1f + vr * vr.dot(prop1.velocity)
                     elif t == CPC:
+                        prop.position += collision.vecs0
                         pass
                     elif t == PCC:
+                        prop1.position += collision.vecs1
                         pass
                     elif t == PPC:
                         pass
@@ -171,26 +173,37 @@ class Space:
                     prop.on_collision(brash)
                     brash.on_collision(prop)
                     if collision.distance == 0:continue
-                    el = (prop.elasticity + brash.elasticity) / 2
+                    el = prop.elasticity + brash.elasticity
                     t = collision.type
                     m0 = prop.mass
-                    m1 = 0
-                    v1i = 0
                     if t == CCC or t == CPC:
                         prop.position += collision.vecs0
                         v = collision.vecs0.unit()
-                        vr = v.rotated(-math.pi / 2)
+                        vr:Vec2 = v.rotated(-math.pi / 2)
                         v0i = v.dot(prop.velocity)
-                        v0f = (((m0 - m1) / (m0 + m1) * v0i) + (2 * m1 / (m0 + m1) * v1i)) * el
+                        v0f = m0 / m0 * v0i * el
                         prop.velocity = v * v0f + vr * vr.dot(prop.velocity)
                     elif t == PCC or t == PPC:
                         vc = collision.vecs0.unit()
                         v = (collision.points0 * -1).unit()
-                        vr = v.rotated(-math.pi / 2)
-                        prop.position += v.dot(collision.vecs0)
+                        vr:Vec2 = v.rotated(-math.pi / 2)
+                        ar = vr.dot(collision.vecs0)
+                        prop.position += v * v.dot(collision.vecs0)
+                        prop.rotate(ar)
                         v0i = vc.dot(vr * collision.points0.len() * prop.angular_velocity + prop.velocity)
-                        pass
+                        _v0f = m0 / m0 * v0i * el
+                        r0f = vr.dot(vc * _v0f) + ar
+                        a = 0
+                        b = 0
+                        if prop.angular_velocity != 0:a = prop.angular_velocity / abs(prop.angular_velocity)
+                        if ar != 0:b = ar / abs(ar)
+                        if a == b:
+                            r0f += prop.angular_velocity
+                        v0f = v.dot(vc * _v0f)
+                        prop.angular_velocity = r0f
+                        prop.velocity = v * v0f + vr * vr.dot(prop.velocity)
 
+#APP CLASS
 class App:
     def __init__(self, space:Space, camera:Camera, name:str, bg:pg.Color):
         pg.init()

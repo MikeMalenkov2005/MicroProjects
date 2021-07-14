@@ -26,14 +26,14 @@ def point_in_polygon(p:Vec2, poly:list[Vec2]) -> bool:
 class Shape:
     def __init__(self, r:float=0, polygon:list[Vec2]=[]):
         self.r = abs(r)
-        self.polygon = polygon
+        self.polygon:list[Vec2] = polygon
         if len(self.polygon) > 2:
             c = Vec2(0, 0)
             for vertex in self.polygon:
                 c += vertex
             c = c/len(self.polygon)
             for i in range(len(self.polygon)):
-                self.polygon[i] = self.polygon[i] - c
+                self.polygon[i] -= c
                 l = self.polygon[i].len()
                 if l > self.r:
                     self.r = l
