@@ -1,1 +1,1 @@
-This is my projects repository.
+This is my repository for some micro projects.
